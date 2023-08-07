@@ -1,0 +1,197 @@
+/* 별도의 라이브러리를 가져와야 할 때 사용 */
+buildscript {
+
+    /* 전역변수 설정 */
+    ext {
+        /* jakarta.servlet.http.HttpServletRequest vs javax.servlet.http.HttpServletRequest */
+        /* springBootVersion = "3.0.6" */
+        springBootVersion = "2.7.14"
+    }
+
+    /* 원격 저장소 설정 */
+    repositories {
+        mavenCentral()
+        //jcenter()
+        //google()
+    }
+
+    /* 원격 저장소의 레파지토리에서 찾을 의존성 라이브러리 */
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:1.1.0"
+    }
+}
+
+/*
+프로젝트 수준의 build.gradle 뿐만 아니라 해당 프로젝트에 포함된 모든 모듈의 build.gradle을 제어
+allprojects {
+}
+해당 프로젝트에 포함된 모든 모듈의 build.gradle을 제어
+subprojects {
+}
+특정 모듈만 제어
+project(":[모듈명]") {
+}
+*/
+
+subprojects {
+    /*
+        자바 플러그인 사용
+        - Java 플러그인 전제 조건은
+          프로덕션 코드는 src/main/java 아래에 둔다.
+          프로덕션 코드의 리소스들은 src/main/resources 아래에 둔다.
+          테스트 코드는 src/test/java 아래에 둔다.
+          테스트 코드 리소스들은 src/test/resources 아래에 둔다.
+    */
+    apply plugin: "java"
+    /* 인텔리제이 플러그인 사용 */
+    apply plugin: "idea"
+    apply plugin: "org.springframework.boot"
+    /* 스프링 부트의 의존성들을 관리해 주는 플러그인 */
+    apply plugin: "io.spring.dependency-management"
+
+    group "com.shopping.mall"
+    version "1.0.0-SNAPSHOT"
+
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
+    compileJava.options.encoding = "UTF-8"
+
+    /* 전역변수 설정 */
+    ext {
+        springBootVersion = "2.7.14"
+    }
+
+    /* 원격 저장소 설정 */
+    repositories {
+        mavenCentral()
+        //jcenter()
+        //google()
+    }
+
+    /* 공통 라이브러리 */
+    dependencies {
+        /* Lombok */
+        implementation "org.projectlombok:lombok:1.18.28"
+        compileOnly "org.projectlombok:lombok:1.18.28"
+        annotationProcessor "org.projectlombok:lombok:1.18.28"
+        testCompileOnly "org.projectlombok:lombok:1.18.28"
+        testAnnotationProcessor "org.projectlombok:lombok:1.18.28"
+
+        /*
+          @ConfigurationProperties은 *.properties or *.yml 파일에 있는 property를 자바 클래스에 값을 가져와 사용할 수 있게 해주는 어노테이션이다.
+          @Value를 통해서도 값을 가지고 올 수 있지만 클래스 파일로 관리할 수 있다는 점에서 차이가 있다.
+        */
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+        /* MariaDB JDBC */
+        implementation group: "org.mariadb.jdbc", name: "mariadb-java-client", version: "3.1.4"
+
+        /* MyBatis */
+        implementation "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
+        implementation group: "org.mybatis.spring.boot", name: "mybatis-spring-boot-starter", version: "3.0.1"
+
+        /* Apache Commons Lang 3 */
+        implementation group: "org.apache.commons", name: "commons-lang3", version: "3.13.0"
+
+        /* Base64 및 Hexadecimal과 같은 다양한 형식을 위한 간단한 인코더 및 디코더가 포함 라이브러리 */
+        implementation group: "commons-codec", name: "commons-codec", version: "1.16.0"
+
+        /* Java 개체를 JSON 표현으로 변환하는 데 사용할 수 있는 Java 라이브러리 */
+        implementation group: "com.google.code.gson", name: "gson", version: "2.10.1"
+        /* Jackson의 일반 데이터 바인딩 기능: 핵심 스트리밍 API에서 작동 */
+        /* Caused by: java.lang.ClassNotFoundException: com.fasterxml.jackson.core.exc.StreamConstraintsException */
+        /* implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.15.1" */
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.3'
+        /* Java에서 JSON 인코더/디코더를 구현 */
+        implementation group: "org.json", name: "json", version: "20230618"
+
+        /* Microsoft 형식 파일에 액세스하기 위한 Java API, Excel 라이브러리 */
+        implementation group: "org.apache.poi", name: "poi", version: "5.2.3"
+        implementation group: "org.apache.poi", name: "poi-ooxml", version: "5.2.3"
+
+        /* JUnit 5를 사용하여 테스트를 작성하기 위한 API */
+        testImplementation group: "org.junit.jupiter", name: "junit-jupiter-api", version: "5.10.0"
+        /* JUnit Jupiter 테스트 엔진용 코어 패키지 */
+        testImplementation group: "org.junit.jupiter", name: "junit-jupiter-engine", version: "5.10.0"
+
+        /* Apache Commons IO library */
+        implementation group: "commons-io", name: "commons-io", version: "2.13.0"
+        /* 서블릿 및 웹 애플리케이션에 멀티파트 파일 업로드 기능에 대한 지원을 추가하는 간단하면서도 유연한 방법을 제공 */
+        implementation group: "commons-fileupload", name: "commons-fileupload", version: "1.5"
+
+        /* Caused by: java.lang.IllegalArgumentException: Failed to load any of the given libraries: [netty_tcnative_osx_x86_64, netty_tcnative_x86_64, netty_tcnative]
+           위 에러로 인한 버전 다운
+           버전 2.0.48 및 이전 버전에는 정적 라이브러리 포함 */
+        implementation group: "io.netty", name: "netty-tcnative-boringssl-static", version: "2.0.48.Final"
+
+        /* RESTful을 포함한 웹, Spring MVC를 사용하는 애플리케이션 구축을 위한 스타터. Tomcat을 기본 내장 컨테이너로 사용 */
+        implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}") {
+            exclude group: "org.springframework.boot", module: "spring-boot-starter-tomcat"
+        }
+        /* Spring AOP 및 AspectJ를 사용한 관점 지향 프로그래밍을 위한 스타터 */
+        implementation "org.springframework.boot:spring-boot-starter-aop:${springBootVersion}"
+
+        /* Spring Doc */
+        implementation group: "org.springdoc", name: "springdoc-openapi-ui", version: "1.7.0"
+
+        /* Java Enterprise Platform의 기반 웹 사양, Servlet API를 사용하여 요청/응답 워크플로와 상호 작용하는 웹 애플리케이션을 구축 */
+        compileOnly group: "javax.servlet", name: "javax.servlet-api", version: "4.0.1"
+    }
+    test {
+        useJUnitPlatform()
+    }
+}
+
+/* Module (shopping-mall-system-api) 설정 */
+project(":shopping-mall-system-api") {
+    /* plain jar 생성하지 않도록 처리 */
+    jar.enabled = false
+
+    dependencies {
+        /* Module (automation-system-core) 설정 */
+        implementation project(":shopping-mall-system-core")
+
+        /* 내장된 서블릿 컨테이너로 Undertow를 사용하기 위한 스타터. spring-boot-starter-tomcat의 대안 */
+        implementation("org.springframework.boot:spring-boot-starter-undertow:${springBootVersion}")
+        /* 애플리케이션을 모니터링하고 관리하는 데 도움이 되는 프로덕션 준비 기능을 제공하는 Spring Boot의 Actuator를 사용하기 위한 스타터 */
+        implementation("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
+        /* JUnit Jupiter, Hamcrest 및 Mockito를 포함한 라이브러리로 Spring Boot 애플리케이션을 테스트하기 위한 스타터 */
+        testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+        /* 스프링 부트 개발 툴 */
+        developmentOnly "org.springframework.boot:spring-boot-devtools"
+
+        /* Application monitoring instrumentation facade */
+        implementation group: "io.micrometer", name: "micrometer-registry-prometheus", version: "1.11.2"
+
+        /* JWT */
+        implementation group: "io.jsonwebtoken", name: "jjwt-api", version: "0.11.5"
+        runtimeOnly group: "io.jsonwebtoken", name: "jjwt-impl", version: "0.11.5"
+        runtimeOnly group: "io.jsonwebtoken", name: "jjwt-jackson", version: "0.11.5"
+
+        /* SOAP (Simple Object Access Protocol) */
+        implementation group: "axis", name: "axis", version: "1.4"
+    }
+
+    test {
+        useJUnitPlatform()
+
+        exclude "**/*"
+    }
+}
+
+/* Module (automation-system-core) 설정 */
+project(":shopping-mall-system-core") {
+    /* core 에서는 bootjar로 패키징 할 필요가 없으므로 추가 */
+    bootJar.enabled = false
+    jar.enabled = true
+
+    dependencies {
+    }
+
+    test {
+        useJUnitPlatform()
+
+        exclude "**/*"
+    }
+}

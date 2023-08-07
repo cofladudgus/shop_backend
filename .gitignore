@@ -1,0 +1,17 @@
+### IntelliJ IDEA ###
+/out/
+/.idea/
+/.gradle/
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# "temporary" build files
+/target
+/shopping-mall-system-api/build/
+/shopping-mall-system-api/logs/
+/shopping-mall-system-core/build/
+/shopping-mall-system-core/logs/
+
+# logs
+/logs/

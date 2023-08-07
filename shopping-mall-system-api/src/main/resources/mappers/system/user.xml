@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopping.mall.mapper.system.user">
+
+    <sql id="userColumns">
+          A.ID                      AS id
+        , A.LOGIN_ID                AS loginId
+        , A.LOGIN_PASS              AS loginPass
+        , A.USER_NM                 AS userNm
+    </sql>
+
+    <select id="selectUserPaging" parameterType="com.shopping.mall.core.vo.common.request.PageRequest" resultType="com.shopping.mall.core.vo.system.response.UserResponse$Paging">
+        /* com.shopping.mall.mapper.system.user.selectUserPaging */
+        SELECT  <include refid="userColumns"/>
+                , ( COUNT(1) OVER() ) AS totalRowCount
+                , ROW_NUMBER() OVER(ORDER BY A.ID ASC) AS no
+        FROM SYS_USER A
+        WHERE 1 = 1
+        <if test='filter.loginId != null and !filter.loginId.equals("")'>
+          AND A.LOGIN_ID LIKE '%' + #{filter.loginId} + '%'
+        </if>
+        ORDER BY A.ID DESC
+        LIMIT #{pageRowCount}
+        OFFSET #{startIndex}
+    </select>
+
+    <select id="selectUserByLoginId" parameterType="String" resultType="com.shopping.mall.core.entity.system.User">
+        /* com.shopping.mall.mapper.system.user.selectUserByLoginId */
+        SELECT    <include refid="userColumns"/>
+        FROM SYS_USER A
+        WHERE 1 = 1
+          AND A.LOGIN_ID = #{loginId}
+    </select>
+
+</mapper>

@@ -1,0 +1,3 @@
+rootProject.name = 'shopping-mall-system-backend'
+include 'shopping-mall-system-api'
+include 'shopping-mall-system-core'

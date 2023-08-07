@@ -1,2 +1,2 @@
 # shopping-mall-system-backend
-쇼핑몰 시스템 (백엔드)
+이커머스 관련 프로젝트 샘플(백엔드)
